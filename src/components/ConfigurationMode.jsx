@@ -1,11 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
-import { appSettings } from "../appsettings";
+import appSettings from "../appsettings";
+import css from "../styles/ConfigurationMode.module.css";
 
 function ConfigurationMode() {
-  const {setPlayers, setQuestions} = useContext(AppContext);
+  const { setPlayers, questions, setQuestions } = useContext(AppContext);
 
-const [numPlayers, setNumPlayers] = useState(0);
+  const [numberOfPlayers, setNumberOfPlayers] = useState("");
   const [questionText, setQuestionText] = useState("");
   const [questionAnswerText, setQuestionAnswerText] = useState("");
   const [importJSON, setImportJSON] = useState("");
@@ -24,8 +25,66 @@ const [numPlayers, setNumPlayers] = useState(0);
   }, [setPlayers, setQuestions]);
 
   const handleAddQuestion = () => {
-    setQuestions((prev) => [...prev, { text: questionText, points: 10 }]);
-    setQuestionText("");
+    if (questionText && questionAnswerText) {
+      setQuestions((prev) => [
+        ...prev,
+        {
+          question: questionText,
+          answer: questionAnswerText,
+          points: appSettings.pointsPerQuestion,
+        },
+      ]);
+
+      const trimmedQuestion = questionText.trim();
+      const trimmedAnswer = questionAnswerText.trim();
+
+      setQuestionText("");
+      setQuestionAnswerText("");
+      const updatedQuestions = [
+        ...questions,
+        { question: trimmedQuestion, answer: trimmedAnswer },
+      ];
+      setQuestions(updatedQuestions);
+      localStorage.setItem("questions", JSON.stringify(updatedQuestions));
+    }
+  };
+
+  const handleBulkImport = () => {
+    try {
+      const importedQuestions = JSON.parse(importJSON);
+      setQuestions(importedQuestions);
+      localStorage.setItem("questions", JSON.stringify(importedQuestions));
+      setImportJSON("");
+      setError("");
+    } catch (err) {
+      setError("Invalid JSON format!");
+    }
+  };
+
+  const handleExport = () => {
+    try {
+      const data = JSON.stringify({
+        questions: JSON.parse(localStorage.getItem("questions")) || [],
+        players: JSON.parse(localStorage.getItem("players")) || [],
+      });
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "questions_and_players.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error exporting data:", error);
+    }
+  };
+
+  const handleReset = () => {
+    if (window.confirm("Are you sure you want to reset all data?")) {
+      localStorage.clear();
+      setPlayers([]);
+      setQuestions([]);
+    }
   };
 
   return (
@@ -34,12 +93,13 @@ const [numPlayers, setNumPlayers] = useState(0);
       <label>Players:</label>
       <input
         type="number"
-        value={numPlayers}
+        value={numberOfPlayers}
         onChange={(event) => {
-          const num = +event.target.value;
-          setNumPlayers(num);
+          const number = event.target.value ? +event.target.value : 0;
+          setNumberOfPlayers(event.target.value);
+
           const playersArray = [];
-          for (let i = 0; i < num; i++) {
+          for (let i = 0; i < number; i++) {
             playersArray.push({
               id: i + 1,
               name: `Player ${i + 1}`,
@@ -47,16 +107,48 @@ const [numPlayers, setNumPlayers] = useState(0);
             });
           }
           setPlayers(playersArray);
+          localStorage.setItem("players", JSON.stringify(playersArray));
         }}
       />
+      <div>
+        <h3>App Settings:</h3>
+        <p>Points per question: {appSettings.pointsPerQuestion}</p>
+        <p>Time per question: {appSettings.timePerQuestion} seconds</p>
+        <p>
+          Splash screen duration: {appSettings.splashScreenDuration} seconds
+        </p>
+      </div>
 
-      <label>Questions:</label>
+      <label>Question:</label>
       <input
         type="text"
         value={questionText}
         onChange={(event) => setQuestionText(event.target.value)}
       />
-      <button onClick={handleAddQuestion}>Add Question</button>
+
+      <label>Answer:</label>
+      <input
+        type="text"
+        value={questionAnswerText}
+        onChange={(event) => setQuestionAnswerText(event.target.value)}
+      />
+
+      <button onClick={handleAddQuestion}>Add Question & Answer</button>
+
+      <div>
+        <label>Bulk Import (JSON format):</label>
+        <textarea
+          className={css.importDataTextarea}
+          value={importJSON}
+          onChange={(event) => setImportJSON(event.target.value)}
+          rows={10}
+          cols={40}
+        />
+        <button onClick={handleBulkImport}>Import Questions</button>
+      </div>
+
+      <button onClick={handleExport}>Export</button>
+      <button onClick={handleReset}>Reset All Data</button>
     </div>
   );
 }
