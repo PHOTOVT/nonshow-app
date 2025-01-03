@@ -1,9 +1,11 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
-import appSettings from "../appsettings";
 import css from "../styles/ConfigurationMode.module.css";
+import appSettings from "../appsettings";
+import Loader from "./Loader";
 
-function ConfigurationMode() {
+
+function ConfigurationMode({onStart}) {
   const { setPlayers, questions, setQuestions } = useContext(AppContext);
 
   const [numberOfPlayers, setNumberOfPlayers] = useState("");
@@ -11,6 +13,7 @@ function ConfigurationMode() {
   const [questionAnswerText, setQuestionAnswerText] = useState("");
   const [importJSON, setImportJSON] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const savedQuestions = JSON.parse(localStorage.getItem("questions"));
@@ -51,18 +54,22 @@ function ConfigurationMode() {
 
   const handleBulkImport = () => {
     try {
+      setLoading(true);
       const importedQuestions = JSON.parse(importJSON);
       setQuestions(importedQuestions);
       localStorage.setItem("questions", JSON.stringify(importedQuestions));
       setImportJSON("");
       setError("");
     } catch (err) {
-      setError("Invalid JSON format!");
+      setError("Invalid JSON format!", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleExport = () => {
     try {
+      setLoading(true);
       const data = JSON.stringify({
         questions: JSON.parse(localStorage.getItem("questions")) || [],
         players: JSON.parse(localStorage.getItem("players")) || [],
@@ -76,6 +83,8 @@ function ConfigurationMode() {
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error exporting data:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -113,9 +122,9 @@ function ConfigurationMode() {
       <div>
         <h3>App Settings:</h3>
         <p>Points per question: {appSettings.pointsPerQuestion}</p>
-        <p>Time per question: {appSettings.timePerQuestion} seconds</p>
+        <p>Time per question: {appSettings.defaultTimePerQuestion} seconds</p>
         <p>
-          Splash screen duration: {appSettings.splashScreenDuration} seconds
+          Splash screen duration: {appSettings.splashScreenTime} seconds
         </p>
       </div>
 
@@ -133,6 +142,7 @@ function ConfigurationMode() {
         onChange={(event) => setQuestionAnswerText(event.target.value)}
       />
 
+{loading && <Loader />}
       <button onClick={handleAddQuestion}>Add Question & Answer</button>
 
       <div>
@@ -149,6 +159,7 @@ function ConfigurationMode() {
 
       <button onClick={handleExport}>Export</button>
       <button onClick={handleReset}>Reset All Data</button>
+      <button onClick={onStart}>Start</button>
     </div>
   );
 }
