@@ -4,8 +4,7 @@ import css from "../styles/ConfigurationMode.module.css";
 import appSettings from "../appsettings";
 import Loader from "./Loader";
 
-
-function ConfigurationMode({onStart}) {
+function ConfigurationMode({ onSplash }) {
   const { setPlayers, questions, setQuestions } = useContext(AppContext);
 
   const [numberOfPlayers, setNumberOfPlayers] = useState("");
@@ -113,6 +112,7 @@ function ConfigurationMode({onStart}) {
               id: i + 1,
               name: `Player ${i + 1}`,
               points: 0,
+              isActive: i === 0,
             });
           }
           setPlayers(playersArray);
@@ -123,9 +123,7 @@ function ConfigurationMode({onStart}) {
         <h3>App Settings:</h3>
         <p>Points per question: {appSettings.pointsPerQuestion}</p>
         <p>Time per question: {appSettings.defaultTimePerQuestion} seconds</p>
-        <p>
-          Splash screen duration: {appSettings.splashScreenTime} seconds
-        </p>
+        <p>Splash screen duration: {appSettings.splashScreenTime} seconds</p>
       </div>
 
       <label>Question:</label>
@@ -142,7 +140,7 @@ function ConfigurationMode({onStart}) {
         onChange={(event) => setQuestionAnswerText(event.target.value)}
       />
 
-{loading && <Loader />}
+      {loading && <Loader />}
       <button onClick={handleAddQuestion}>Add Question & Answer</button>
 
       <div>
@@ -159,7 +157,7 @@ function ConfigurationMode({onStart}) {
 
       <button onClick={handleExport}>Export</button>
       <button onClick={handleReset}>Reset All Data</button>
-      <button onClick={onStart}>Start</button>
+      <button onClick={onSplash}>Start</button>
     </div>
   );
 }

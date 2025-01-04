@@ -1,18 +1,18 @@
 import { useEffect } from "react";
+import appSettings from "../appsettings";
 
-function SplashScreen({ onNext }) {
+function SplashScreen({ onPlayers }) {
   useEffect(() => {
     const timer = setTimeout(() => {
-      onNext();
-    }, 3000);
-
+      onPlayers();
+    }, parseInt(appSettings.splashScreenTime, 10));
     return () => clearTimeout(timer);
-  }, [onNext]);
+  }, [onPlayers]);
 
   return (
     <div>
-      <h1>Welcome to Show Mode!</h1>
-      <p>Get ready...</p>
+      <h1>Welcome to the Game!</h1>
+      <p>Get ready, the game is about to start...</p>
     </div>
   );
 }
