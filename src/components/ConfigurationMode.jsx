@@ -1,65 +1,66 @@
 import { useContext, useState, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
-import css from "../styles/ConfigurationMode.module.css";
+import { v4 as uuidv4 } from "uuid";
+
 import appSettings from "../appsettings";
 import Loader from "./Loader";
+
+import css from "../styles/ConfigurationMode.module.css";
 
 function ConfigurationMode({ onSplash }) {
   const { setPlayers, questions, setQuestions } = useContext(AppContext);
 
   const [numberOfPlayers, setNumberOfPlayers] = useState("");
   const [questionText, setQuestionText] = useState("");
-  const [questionAnswerText, setQuestionAnswerText] = useState("");
+  const [answerText, setAnswerText] = useState("");
   const [importJSON, setImportJSON] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const savedQuestions = JSON.parse(localStorage.getItem("questions"));
-    const savedPlayers = JSON.parse(localStorage.getItem("players"));
-
     if (savedQuestions) {
       setQuestions(savedQuestions);
     }
+
+    const savedPlayers = JSON.parse(localStorage.getItem("players"));
     if (savedPlayers) {
       setPlayers(savedPlayers);
     }
-  }, [setPlayers, setQuestions]);
+  }, [setQuestions, setPlayers]);
 
   const handleAddQuestion = () => {
-    if (questionText && questionAnswerText) {
-      setQuestions((prev) => [
-        ...prev,
-        {
-          question: questionText,
-          answer: questionAnswerText,
-          points: appSettings.pointsPerQuestion,
-        },
-      ]);
+    if (questionText && answerText) {
+      const newQuestion = {
+        name: questionText,
+        answer: answerText,
+        points: appSettings.pointsPerQuestion,
+        used: false,
+        id: uuidv4(),
+      };
 
-      const trimmedQuestion = questionText.trim();
-      const trimmedAnswer = questionAnswerText.trim();
+      setQuestions((prev) => [...prev, newQuestion]);
+      localStorage.setItem(
+        "questions",
+        JSON.stringify([...questions, newQuestion])
+      );
 
       setQuestionText("");
-      setQuestionAnswerText("");
-      const updatedQuestions = [
-        ...questions,
-        { question: trimmedQuestion, answer: trimmedAnswer },
-      ];
-      setQuestions(updatedQuestions);
-      localStorage.setItem("questions", JSON.stringify(updatedQuestions));
+      setAnswerText("");
     }
   };
 
   const handleBulkImport = () => {
     try {
-      setLoading(true);
-      const importedQuestions = JSON.parse(importJSON);
+      const importedQuestions = JSON.parse(importJSON).map((question) => ({
+        ...question,
+        id: question.id || uuidv4(),
+        used: question.used || false,
+      }));
       setQuestions(importedQuestions);
       localStorage.setItem("questions", JSON.stringify(importedQuestions));
       setImportJSON("");
-      setError("");
-    } catch (err) {
+    } catch (error) {
       setError("Invalid JSON format!", error);
     } finally {
       setLoading(false);
@@ -109,7 +110,7 @@ function ConfigurationMode({ onSplash }) {
           const playersArray = [];
           for (let i = 0; i < number; i++) {
             playersArray.push({
-              id: i + 1,
+              id: uuidv4(),
               name: `Player ${i + 1}`,
               points: 0,
               isActive: i === 0,
@@ -119,6 +120,7 @@ function ConfigurationMode({ onSplash }) {
           localStorage.setItem("players", JSON.stringify(playersArray));
         }}
       />
+
       <div>
         <h3>App Settings:</h3>
         <p>Points per question: {appSettings.pointsPerQuestion}</p>
@@ -136,8 +138,8 @@ function ConfigurationMode({ onSplash }) {
       <label>Answer:</label>
       <input
         type="text"
-        value={questionAnswerText}
-        onChange={(event) => setQuestionAnswerText(event.target.value)}
+        value={answerText}
+        onChange={(event) => setAnswerText(event.target.value)}
       />
 
       {loading && <Loader />}

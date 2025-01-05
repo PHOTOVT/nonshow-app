@@ -4,6 +4,7 @@ import Loader from "./components/Loader";
 import ConfigurationMode from "./components/ConfigurationMode";
 import SplashScreen from "./components/SplashScreen";
 import PlayersScreen from "./components/PlayersScreen";
+import QuestionSelectionScreen from "./components/QuestionSelectionScreen";
 
 function App() {
   const [mode, setMode] = useState("configuration");
@@ -19,16 +20,21 @@ function App() {
     }, 2000);
   };
 
-  const handleSplashComplete = () => {
+  const handleSplash = () => {
     setMode("players");
+  };
+
+  const handleSelection = () => {
+    setMode("selection");
   };
 
   return (
     <AppProvider>
       {mode === "configuration" && <ConfigurationMode onSplash={handleStart} />}
       {mode === "loading" && <Loader loading={loading} />}
-      {mode === "splash" && <SplashScreen onPlayers={handleSplashComplete} />}
-      {mode === "players" && <PlayersScreen />}
+      {mode === "splash" && <SplashScreen onPlayers={handleSplash} />}
+      {mode === "players" && <PlayersScreen onSelection={handleSelection}/>}
+      {mode === "selection" && <QuestionSelectionScreen />}
     </AppProvider>
   );
 }
