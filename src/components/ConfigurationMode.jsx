@@ -7,7 +7,7 @@ import Loader from "./Loader";
 
 import css from "../styles/ConfigurationMode.module.css";
 
-function ConfigurationMode({ onSplash }) {
+function ConfigurationMode({ onConfiguration }) {
   const { setPlayers, questions, setQuestions } = useContext(AppContext);
 
   const [numberOfPlayers, setNumberOfPlayers] = useState("");
@@ -37,6 +37,7 @@ function ConfigurationMode({ onSplash }) {
         points: appSettings.pointsPerQuestion,
         used: false,
         id: uuidv4(),
+        time: 30,
       };
 
       setQuestions((prev) => [...prev, newQuestion]);
@@ -159,7 +160,7 @@ function ConfigurationMode({ onSplash }) {
 
       <button onClick={handleExport}>Export</button>
       <button onClick={handleReset}>Reset All Data</button>
-      <button onClick={onSplash}>Start</button>
+      <button onClick={onConfiguration}>Start</button>
     </div>
   );
 }

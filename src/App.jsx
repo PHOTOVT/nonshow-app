@@ -5,12 +5,13 @@ import ConfigurationMode from "./components/ConfigurationMode";
 import SplashScreen from "./components/SplashScreen";
 import PlayersScreen from "./components/PlayersScreen";
 import QuestionSelectionScreen from "./components/QuestionSelectionScreen";
+import QuestionScreen from "./components/QuestionScreen";
 
 function App() {
   const [mode, setMode] = useState("configuration");
   const [loading, setLoading] = useState(false);
 
-  const handleStart = () => {
+  const handleConfiguration = () => {
     setMode("loading");
     setLoading(true);
 
@@ -24,19 +25,29 @@ function App() {
     setMode("players");
   };
 
-  const handleSelection = () => {
+  const handlePlayers = () => {
     setMode("selection");
+  };
+
+  const handleSelection = () => {
+    setMode("question");
+  };
+
+  const handleQuestion = () => {
+    setMode("configuration"); 
   };
 
   return (
     <AppProvider>
-      {mode === "configuration" && <ConfigurationMode onSplash={handleStart} />}
+      {mode === "configuration" && <ConfigurationMode onConfiguration={handleConfiguration} />}
       {mode === "loading" && <Loader loading={loading} />}
-      {mode === "splash" && <SplashScreen onPlayers={handleSplash} />}
-      {mode === "players" && <PlayersScreen onSelection={handleSelection}/>}
-      {mode === "selection" && <QuestionSelectionScreen />}
+      {mode === "splash" && <SplashScreen onSplash={handleSplash} />}
+      {mode === "players" && <PlayersScreen onPlayers={handlePlayers} />}
+      {mode === "selection" && <QuestionSelectionScreen onSelection={handleSelection} />}
+      {mode === "question" && <QuestionScreen onQuestion={handleQuestion} />}
     </AppProvider>
   );
 }
 
 export default App;
+

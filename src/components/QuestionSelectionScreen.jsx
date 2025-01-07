@@ -1,33 +1,46 @@
 import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
+import css from "../styles/QuestionSelectionScreen.module.css";
 
-function QuestionSelectionScreen({ onQuestionSelected }) {
+function QuestionSelectionScreen({ onSelection }) {
   const { questions, setQuestions } = useContext(AppContext);
 
   const handleSelectQuestion = (questionId) => {
     const updatedQuestions = questions.map((question) =>
-      question.id === questionId
-        ? { ...question, used: true } 
-        : question
+      question.id === questionId ? { ...question, used: true } : question
     );
     setQuestions(updatedQuestions);
-    localStorage.setItem("questions", JSON.stringify(updatedQuestions)); 
-    onQuestionSelected(questionId); 
+    try {
+      localStorage.setItem("questions", JSON.stringify(updatedQuestions));
+    } catch (error) {
+      console.error("Error saving to localStorage:", error);
+    }
+    onSelection();
   };
 
+  const unusedQuestions = questions.filter((question) => !question.used);
+
   return (
-    <div>
+    <div className={css.container}>
       <h2>Select a Question</h2>
-      <ul>
-        {questions
-          .filter((question) => !question.used) 
-          .map((question) => (
-            <li key={question.id}>
+      {unusedQuestions.length > 0 ? (
+        <ul className={css.questionList}>
+          {unusedQuestions.map((question) => (
+            <li key={question.id} className={css.questionItem}>
               <p>{question.name}</p>
-              <button onClick={() => handleSelectQuestion(question.id)}>Select</button>
+              <button
+                onClick={() => handleSelectQuestion(question.id)}
+                aria-label={`Select question: ${question.name}`}
+                className={css.selectButton}
+              >
+                Select
+              </button>
             </li>
           ))}
-      </ul>
+        </ul>
+      ) : (
+        <p className={css.noQuestions}>No questions available for selection.</p>
+      )}
     </div>
   );
 }

@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import appSettings from "../appsettings";
 
-function SplashScreen({ onPlayers }) {
+function SplashScreen({ onSplash }) {
   useEffect(() => {
     const timer = setTimeout(() => {
-      onPlayers();
+      onSplash();
     }, parseInt(appSettings.splashScreenTime, 10));
     return () => clearTimeout(timer);
-  }, [onPlayers]);
+  }, [onSplash]);
 
   return (
     <div>
