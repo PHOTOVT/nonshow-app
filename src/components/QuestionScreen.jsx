@@ -1,63 +1,89 @@
 import { useState, useEffect, useContext } from "react";
 import { AppContext } from "../context/AppContext";
+import css from "../styles/QuestionScreen.module.css";
 
-function QuestionScreen({ question, onNextQuestion, onQuestion }) {
-  const { questions, setQuestions } = useContext(AppContext);
+function QuestionScreen({ onQuestion }) {
+  const { questions, setQuestions, players, setPlayers } =
+    useContext(AppContext);
 
-  const [timeLeft, setTimeLeft] = useState(question?.time);
+  const unansweredQuestions = questions.filter(
+    (question) =>
+      question.time &&
+      question.name &&
+      question.answer &&
+      question.points &&
+      !question.used
+  );
+
+  const currentQuestion = unansweredQuestions[0] || null;
+
+  const [timeRemaining, setTimeRemaining] = useState(
+    currentQuestion?.time || 30
+  );
   const [showAnswer, setShowAnswer] = useState(false);
 
   useEffect(() => {
-    if (!question) return;
-
-    if (timeLeft > 0 && !showAnswer) {
-      const timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
+    if (timeRemaining > 0) {
+      const timer = setTimeout(() => setTimeRemaining(timeRemaining - 1), 1000);
       return () => clearTimeout(timer);
-    } else if (timeLeft === 0 && !showAnswer) {
+    } else {
       setShowAnswer(true);
-      if (onQuestion) {
-        onQuestion();
-      }
     }
-  }, [timeLeft, showAnswer, onQuestion, question]);
+  }, [timeRemaining]);
 
   const handleRewardPoints = (points) => {
-    if (!question) return;
-
-    const updatedQuestions = questions.map((q) =>
-      q.id === question.id ? { ...q, rewarded: points } : q
+    const updatedPlayers = players.map((player) =>
+      player.isActive ? { ...player, points: player.points + points } : player
     );
+    setPlayers(updatedPlayers);
+    localStorage.setItem("players", JSON.stringify(updatedPlayers));
 
-    setQuestions(updatedQuestions);
-    localStorage.setItem("questions", JSON.stringify(updatedQuestions));
-    onNextQuestion();
+    if (currentQuestion) {
+      const updatedQuestions = questions.map((q) =>
+        q.id === currentQuestion.id ? { ...q, used: true } : q
+      );
+      setQuestions(updatedQuestions);
+      localStorage.setItem("questions", JSON.stringify(updatedQuestions));
+    }
+
+    onQuestion();
   };
 
+  const handleSkip = () => {
+    if (currentQuestion) {
+      const updatedQuestions = questions.map((q) =>
+        q.id === currentQuestion.id ? { ...q, used: true } : q
+      );
+      setQuestions(updatedQuestions);
+      localStorage.setItem("questions", JSON.stringify(updatedQuestions));
+    }
+
+    onQuestion();
+  };
+
+  if (!currentQuestion) {
+    return <p>No unanswered questions available.</p>;
+  }
+
   return (
-    <div>
-      <h2>Question Screen</h2>
-      <div>
+    <div className={css.container}>
+      <h2>Question</h2>
+      <p className={css.question}>{currentQuestion.name}</p>
+      <div className={css.timer}>
         {showAnswer ? (
-          <div>
-            <p>
-              <strong>Answer:</strong> {question.answer}
-            </p>
-            <div>
-              <button onClick={() => handleRewardPoints(question.points)}>
-                Reward Points
-              </button>
-              <button onClick={() => handleRewardPoints(0)}>Skip Points</button>
-            </div>
-          </div>
+          <p className={css.answer}>Answer: {currentQuestion.answer}</p>
         ) : (
-          <div>
-            <p>
-              <strong>Question:</strong> {question?.name || "No question name"}
-            </p>
-            <p>Time Left: {timeLeft} seconds</p>
-          </div>
+          <p>Time Remaining: {timeRemaining}s</p>
         )}
       </div>
+      {showAnswer && (
+        <div className={css.actions}>
+          <button onClick={() => handleRewardPoints(currentQuestion.points)}>
+            Reward Points
+          </button>
+          <button onClick={handleSkip}>Skip</button>
+        </div>
+      )}
     </div>
   );
 }

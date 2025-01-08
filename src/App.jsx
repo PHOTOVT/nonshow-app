@@ -34,20 +34,23 @@ function App() {
   };
 
   const handleQuestion = () => {
-    setMode("configuration"); 
+    setMode("configuration");
   };
 
   return (
     <AppProvider>
-      {mode === "configuration" && <ConfigurationMode onConfiguration={handleConfiguration} />}
+      {mode === "configuration" && (
+        <ConfigurationMode onConfiguration={handleConfiguration} />
+      )}
       {mode === "loading" && <Loader loading={loading} />}
       {mode === "splash" && <SplashScreen onSplash={handleSplash} />}
       {mode === "players" && <PlayersScreen onPlayers={handlePlayers} />}
-      {mode === "selection" && <QuestionSelectionScreen onSelection={handleSelection} />}
+      {mode === "selection" && (
+        <QuestionSelectionScreen onSelection={handleSelection} />
+      )}
       {mode === "question" && <QuestionScreen onQuestion={handleQuestion} />}
     </AppProvider>
   );
 }
 
 export default App;
-

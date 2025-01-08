@@ -6,6 +6,7 @@ import appSettings from "../appsettings";
 import Loader from "./Loader";
 
 import css from "../styles/ConfigurationMode.module.css";
+import QuestionScreen from "./QuestionScreen";
 
 function ConfigurationMode({ onConfiguration }) {
   const { setPlayers, questions, setQuestions } = useContext(AppContext);
