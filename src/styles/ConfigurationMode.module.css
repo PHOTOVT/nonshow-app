@@ -7,9 +7,9 @@ button {
 }
 
 button:hover {
-  background-color: midnightblue;
-  color: crimson;
-  border: 2px solid midnightblue;
+  background-color: transparent;
+  color: black;
+  border: 2px solid khaki;
 }
 
 h2,
@@ -32,8 +32,8 @@ h3 {
 }
 
 .input:focus {
-  border-color: midnightblue;
-  box-shadow: 0 0 5px black;
+  border-color: khaki;
+  box-shadow: 0 0 7px khaki;
   outline: none;
 }
 
@@ -80,8 +80,8 @@ textarea {
 }
 
 textarea:focus {
-  border-color: midnightblue;
-  box-shadow: 0 0 5px black;
+  border-color: khaki;
+  box-shadow: 0 0 7px khaki;
   outline: none;
 }
 

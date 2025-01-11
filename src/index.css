@@ -1,17 +1,23 @@
 :root {
-  font-family: "RedHatDisplay";
+  font-family: "PilcrowRounded";
   line-height: 1.75;
   font-weight: 400;
 
-
   color-scheme: light dark;
   color: black;
-  background-color: crimson;
+  background: linear-gradient(to bottom, #0000ff 0%, #99ccff 100%);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Roundo";
+  font-weight: 900;
 }
 
 a {

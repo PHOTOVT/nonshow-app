@@ -209,9 +209,9 @@ function ConfigurationMode({ onConfiguration }) {
       </div>
 
       <div className={css.settingsContainer}>
-        <h3 className={css.appSettings}>App Settings:</h3>
+        <h3 className={css.appSettings}>App Settings</h3>
         <div className={css.inputGroup}>
-          <label className={css.inputLabel}>Time per question (seconds):</label>
+          <label className={css.inputLabel}>Time per question</label>
           <input
             className={css.input}
             type="number"
@@ -223,7 +223,7 @@ function ConfigurationMode({ onConfiguration }) {
         </div>
 
         <div className={css.inputGroup}>
-          <label className={css.inputLabel}>Points per question:</label>
+          <label className={css.inputLabel}>Points per question</label>
           <input
             className={css.input}
             type="number"
@@ -235,7 +235,7 @@ function ConfigurationMode({ onConfiguration }) {
         </div>
 
         <div className={css.inputGroup}>
-          <label className={css.inputLabel}>Randomize questions:</label>
+          <label className={css.inputLabel}>Randomize question</label>
           <input
             className={css.inputCheckbox}
             type="checkbox"
@@ -246,7 +246,7 @@ function ConfigurationMode({ onConfiguration }) {
 
         <div className={css.inputGroup}>
           <label className={css.inputLabel}>
-            Splash screen duration (seconds):
+            Splash screen duration
           </label>
           <input
             className={css.input}
@@ -264,7 +264,7 @@ function ConfigurationMode({ onConfiguration }) {
 
       <div>
         <div className={css.inputGroup}>
-          <label className={css.inputLabel}>Select question type:</label>
+          <label className={css.inputLabel}>Select question type</label>
           <select
             value={questionType}
             onChange={(e) => setQuestionType(e.target.value)}
@@ -276,7 +276,7 @@ function ConfigurationMode({ onConfiguration }) {
         </div>
 
         <div className={css.inputGroup}>
-          <label className={css.inputLabel}>Question:</label>
+          <label className={css.inputLabel}>Question</label>
           <input
             className={css.input}
             type="text"
@@ -288,7 +288,7 @@ function ConfigurationMode({ onConfiguration }) {
         {questionType === "MCQ" && (
           <>
             <label className={css.inputLabel}>
-              Answer options (at least 4 options):
+              Answer options (at least 4 options)
             </label>
             {answerOptions.map((option, index) => (
               <input
@@ -309,7 +309,7 @@ function ConfigurationMode({ onConfiguration }) {
 
         {questionType === "GuessLetters" && (
           <div className={css.inputGroup}>
-            <label className={css.inputLabel}>Answer (Hidden word):</label>
+            <label className={css.inputLabel}>Answer (Hidden word)</label>
             <input
               className={css.input}
               type="text"
@@ -320,7 +320,7 @@ function ConfigurationMode({ onConfiguration }) {
         )}
 
         <div className={css.inputGroup}>
-          <label className={css.inputLabel}>Answer:</label>
+          <label className={css.inputLabel}>Answer</label>
           <input
             className={css.input}
             type="text"
@@ -341,7 +341,7 @@ function ConfigurationMode({ onConfiguration }) {
         </button>
 
         <div className={css.bulkImport}>
-          <label className={css.inputLabel}>Bulk import (JSON format):</label>
+          <label className={css.inputLabel}>Bulk import (JSON format)</label>
           <textarea
             className={css.importDataTextarea}
             value={importJSON}
@@ -361,7 +361,7 @@ function ConfigurationMode({ onConfiguration }) {
           Start
         </button>
       </div>
-    </div>
+  </div>
   );
 }
 

@@ -1,22 +1,29 @@
 @font-face {
   font-display: swap;
-  font-family: "RedHatDisplay";
+  font-family: "PilcrowRounded";
   font-style: normal;
   font-weight: 400;
-  src: url("../font/RedHatDisplay-Regular.woff2") format("woff2");
+  src: url("../font/PilcrowRounded-Regular.woff") format("woff2");
 }
 
 @font-face {
   font-display: swap;
-  font-family: "RedHatDisplay";
-  font-style: normal;
-  font-weight: 600;
-  src: url("../font/RedHatDisplay-Medium.woff2") format("woff2");
-}
-
-@font-face {
-  font-display: swap;
-  font-family: "RedHatDisplay";
+  font-family: "PilcrowRounded";
   font-weight: 900;
-  src: url("../font/RedHatDisplay-Bold.woff2") format("woff2");
+  src: url("../font/PilcrowRounded-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "Roundo";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../font/Roundo-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "Roundo";
+  font-weight: 900;
+  src: url("../font/Roundo-Bold.woff2") format("woff2");
 }
