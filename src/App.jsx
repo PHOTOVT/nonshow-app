@@ -34,7 +34,7 @@ function App() {
   };
 
   const handleQuestion = () => {
-    setMode("configuration");
+    setMode("players");
   };
 
   return (
