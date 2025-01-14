@@ -1,24 +1,36 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
 import css from "../styles/QuestionSelectionScreen.module.css";
 
 function QuestionSelectionScreen({ onSelection }) {
   const { questions, setQuestions } = useContext(AppContext);
+  const [localQuestions, setLocalQuestions] = useState(questions);
+
+  useEffect(() => {
+    const savedQuestions = localStorage.getItem("questions");
+    if (savedQuestions) {
+      setLocalQuestions(JSON.parse(savedQuestions));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("questions", JSON.stringify(localQuestions));
+  }, [localQuestions]);
 
   const handleSelectQuestion = (questionId) => {
-    const updatedQuestions = questions.map((question) =>
-      question.id === questionId ? { ...question, used: true } : question
-    );
-    setQuestions(updatedQuestions);
-    try {
-      localStorage.setItem("questions", JSON.stringify(updatedQuestions));
-    } catch (error) {
-      console.error("Error saving to localStorage:", error);
-    }
+    const updatedQuestions = localQuestions.map((question) => {
+      if (question.id === questionId) {
+        return { ...question, used: true };
+      }
+      return question;
+    });
+
+    setLocalQuestions(updatedQuestions);
+
     onSelection();
   };
 
-  const unusedQuestions = questions.filter((question) => !question.used);
+  const unusedQuestions = localQuestions.filter((question) => !question.used);
 
   return (
     <div className={css.container}>
@@ -27,7 +39,7 @@ function QuestionSelectionScreen({ onSelection }) {
         <ul className={css.questionList}>
           {unusedQuestions.map((question) => (
             <li key={question.id} className={css.questionItem}>
-              <p>{question.name}</p>
+              <h3>{question.name}</h3>
               <button
                 onClick={() => handleSelectQuestion(question.id)}
                 aria-label={`Select question: ${question.name}`}
@@ -39,7 +51,9 @@ function QuestionSelectionScreen({ onSelection }) {
           ))}
         </ul>
       ) : (
-        <p className={css.noQuestions}>No questions available for selection.</p>
+        <h3 className={css.noQuestions}>
+          No questions available for selection
+        </h3>
       )}
     </div>
   );

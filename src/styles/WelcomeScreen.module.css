@@ -1,0 +1,13 @@
+.welcomeContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .welcomeContainer p {
+    font-size: 1.2em;
+    color: #555;
+  }
+  

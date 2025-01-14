@@ -1,0 +1,13 @@
+.noQuestions {
+  color: darksalmon;
+}
+
+.questionList {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 150px;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 0;
+}

@@ -26,14 +26,11 @@ function ConfigurationMode({ onConfiguration }) {
   const [questionPoints, setQuestionPoints] = useState(
     appSettings.pointsPerQuestion
   );
-  const [randomizeQuestions, setRandomizeQuestions] = useState(
-    appSettings.allowRandomizeQuestions
-  );
   const [splashDuration, setSplashDuration] = useState(
     appSettings.splashScreenTime
   );
   const [questionType, setQuestionType] = useState("QA");
-  const [answerOptions, setAnswerOptions] = useState(["", "", "", ""]);
+  const [answerOptions, setAnswerOptions] = useState(["", "", ""]);
   const [hiddenWord, setHiddenWord] = useState("");
 
   useEffect(() => {
@@ -48,7 +45,6 @@ function ConfigurationMode({ onConfiguration }) {
       setPlayerLimit(savedSettings.defaultNumPlayers);
       setTimeLimitPerQuestion(savedSettings.defaultTimePerQuestion);
       setQuestionPoints(savedSettings.pointsPerQuestion);
-      setRandomizeQuestions(savedSettings.allowRandomizeQuestions);
       setSplashDuration(savedSettings.splashScreenTime);
     }
   }, [setQuestions, setPlayers]);
@@ -136,7 +132,6 @@ function ConfigurationMode({ onConfiguration }) {
       defaultNumPlayers: playerLimit,
       defaultTimePerQuestion: timeLimitPerQuestion,
       pointsPerQuestion: questionPoints,
-      allowRandomizeQuestions: randomizeQuestions,
       splashScreenTime: splashDuration,
     };
 
@@ -146,15 +141,26 @@ function ConfigurationMode({ onConfiguration }) {
 
   const handleBulkImport = () => {
     try {
-      const importedQuestions = JSON.parse(importJSON).map((question) => ({
-        ...question,
-        id: question.id || uuidv4(),
-        used: question.used || false,
-      }));
-      setQuestions(importedQuestions);
-      localStorage.setItem("questions", JSON.stringify(importedQuestions));
-      setImportJSON("");
+      const parsedData = JSON.parse(importJSON);
+      if (Array.isArray(parsedData.questions)) {
+        const importedQuestions = parsedData.questions.map((question) => ({
+          name: question.name || "Unnamed Question",
+          answer: question.answer || "No Answer",
+          points: question.points || 0,
+          used: question.used || false,
+          id: question.id || uuidv4(),
+          time: question.time || 0,
+          type: question.type || "QA",
+        }));
+
+        setQuestions(importedQuestions);
+        localStorage.setItem("questions", JSON.stringify(importedQuestions));
+        setImportJSON("");
+      } else {
+        setError("Invalid JSON format: No questions array found!");
+      }
     } catch (error) {
+      console.error("Error importing JSON:", error);
       setError("Invalid JSON format!");
     } finally {
       setLoading(false);
@@ -190,72 +196,66 @@ function ConfigurationMode({ onConfiguration }) {
       setPlayerLimit(appSettings.defaultNumPlayers);
       setTimeLimitPerQuestion(appSettings.defaultTimePerQuestion);
       setQuestionPoints(appSettings.pointsPerQuestion);
-      setRandomizeQuestions(appSettings.allowRandomizeQuestions);
       setSplashDuration(appSettings.splashScreenTime);
     }
   };
 
   return (
     <div className={css.container}>
-      <h2 className={css.configurationMode}>Configuration Mode</h2>
       <div className={css.inputGroup}>
-        <label className={css.inputLabel}>Number of players (max 8)</label>
-        <input
-          className={css.input}
-          type="number"
-          value={numberOfPlayers}
-          onChange={handleNumberOfPlayersChange}
-        />
+        <h2>Quiz Settings</h2>
+        <label className={css.inputLabel}>
+          Number of players (max 8)
+          <input
+            className={css.input}
+            type="number"
+            value={numberOfPlayers}
+            onChange={handleNumberOfPlayersChange}
+          />
+        </label>
       </div>
 
       <div className={css.settingsContainer}>
-        <h3 className={css.appSettings}>App Settings</h3>
         <div className={css.inputGroup}>
-          <label className={css.inputLabel}>Time per question</label>
-          <input
-            className={css.input}
-            type="number"
-            value={timeLimitPerQuestion}
-            onChange={(e) =>
-              setTimeLimitPerQuestion(Math.max(0, +e.target.value || 0))
-            }
-          />
+          <label className={css.inputLabel}>
+            Time per question
+            <input
+              className={css.input}
+              type="number"
+              value={timeLimitPerQuestion}
+              onChange={(e) =>
+                setTimeLimitPerQuestion(Math.max(0, +e.target.value || 0))
+              }
+            />
+          </label>
         </div>
 
         <div className={css.inputGroup}>
-          <label className={css.inputLabel}>Points per question</label>
-          <input
-            className={css.input}
-            type="number"
-            value={questionPoints}
-            onChange={(e) =>
-              setQuestionPoints(Math.max(0, +e.target.value || 0))
-            }
-          />
-        </div>
-
-        <div className={css.inputGroup}>
-          <label className={css.inputLabel}>Randomize question</label>
-          <input
-            className={css.inputCheckbox}
-            type="checkbox"
-            checked={randomizeQuestions}
-            onChange={(e) => setRandomizeQuestions(e.target.checked)}
-          />
+          <label className={css.inputLabel}>
+            Points per question
+            <input
+              className={css.input}
+              type="number"
+              value={questionPoints}
+              onChange={(e) =>
+                setQuestionPoints(Math.max(0, +e.target.value || 0))
+              }
+            />
+          </label>
         </div>
 
         <div className={css.inputGroup}>
           <label className={css.inputLabel}>
             Splash screen duration
+            <input
+              className={css.input}
+              type="number"
+              value={splashDuration}
+              onChange={(e) =>
+                setSplashDuration(Math.max(0, +e.target.value || 0))
+              }
+            />
           </label>
-          <input
-            className={css.input}
-            type="number"
-            value={splashDuration}
-            onChange={(e) =>
-              setSplashDuration(Math.max(0, +e.target.value || 0))
-            }
-          />
         </div>
         <button className={css.saveSettings} onClick={saveSettings}>
           Save settings
@@ -264,32 +264,35 @@ function ConfigurationMode({ onConfiguration }) {
 
       <div>
         <div className={css.inputGroup}>
-          <label className={css.inputLabel}>Select question type</label>
-          <select
-            value={questionType}
-            onChange={(e) => setQuestionType(e.target.value)}
-          >
-            <option value="QA">Question and answer</option>
-            <option value="MCQ">Multiple choice</option>
-            <option value="GuessLetters">Guess the letters</option>
-          </select>
+          <label className={css.inputLabel}>
+            Select question type
+            <select
+              className={css.inputSelect}
+              value={questionType}
+              onChange={(e) => setQuestionType(e.target.value)}
+            >
+              <option value="QA">Question and answer</option>
+              <option value="MCQ">Multiple choice</option>
+              <option value="GuessLetters">Guess the letters</option>
+            </select>
+          </label>
         </div>
 
         <div className={css.inputGroup}>
-          <label className={css.inputLabel}>Question</label>
-          <input
-            className={css.input}
-            type="text"
-            value={questionText}
-            onChange={(e) => setQuestionText(e.target.value)}
-          />
+          <label className={css.inputLabel}>
+            Question
+            <input
+              className={css.input}
+              type="text"
+              value={questionText}
+              onChange={(e) => setQuestionText(e.target.value)}
+            />
+          </label>
         </div>
 
         {questionType === "MCQ" && (
-          <>
-            <label className={css.inputLabel}>
-              Answer options (at least 4 options)
-            </label>
+          <div className={css.inputGroup}>
+            <label className={css.inputLabel}>Answer options</label>
             {answerOptions.map((option, index) => (
               <input
                 className={css.input}
@@ -304,29 +307,33 @@ function ConfigurationMode({ onConfiguration }) {
                 placeholder={`Option ${index + 1}`}
               />
             ))}
-          </>
+          </div>
         )}
 
         {questionType === "GuessLetters" && (
           <div className={css.inputGroup}>
-            <label className={css.inputLabel}>Answer (Hidden word)</label>
-            <input
-              className={css.input}
-              type="text"
-              value={hiddenWord}
-              onChange={(e) => setHiddenWord(e.target.value)}
-            />
+            <label className={css.inputLabel}>
+              Answer (Hidden word)
+              <input
+                className={css.input}
+                type="text"
+                value={hiddenWord}
+                onChange={(e) => setHiddenWord(e.target.value)}
+              />
+            </label>
           </div>
         )}
 
         <div className={css.inputGroup}>
-          <label className={css.inputLabel}>Answer</label>
-          <input
-            className={css.input}
-            type="text"
-            value={answerText}
-            onChange={(e) => setAnswerText(e.target.value)}
-          />
+          <label className={css.inputLabel}>
+            Answer
+            <input
+              className={css.input}
+              type="text"
+              value={answerText}
+              onChange={(e) => setAnswerText(e.target.value)}
+            />
+          </label>
         </div>
 
         <button
@@ -355,13 +362,13 @@ function ConfigurationMode({ onConfiguration }) {
       </div>
 
       <div className={css.configurationButtons}>
-        <button onClick={handleExport}>Export</button>
+        <button onClick={handleExport}>Export questions</button>
         <button onClick={handleReset}>Reset all data</button>
         <button onClick={onConfiguration} disabled={!numberOfPlayers}>
-          Start
+          Start quiz!
         </button>
       </div>
-  </div>
+    </div>
   );
 }
 

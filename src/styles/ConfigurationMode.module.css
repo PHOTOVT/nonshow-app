@@ -1,63 +1,75 @@
-button {
-  color: white;
-  font-size: 20px;
-  padding: 10px 20px;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-  border: 2px solid black;
+.inputLabel {
+  font-size: 25px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  border-radius: 20px;
 }
 
-button:hover {
-  background-color: transparent;
-  color: black;
-  border: 2px solid khaki;
+.configurationButtons {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: stretch;
+  gap: 20px;
 }
 
-h2,
-h3 {
-  margin: 20px 0;
-}
-
-.input {
+input {
   font-family: inherit;
-  font-weight: 900;
-  font-size: 20px;
+  font-weight: 700;
+  font-size: 20px;;
   color: black;
   padding: 10px 15px;
   border: 2px solid black;
-  border-radius: 5px;
+  border-radius: 20px;
   background-color: transparent;
   width: 250px;
   margin: 10px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.input:focus {
-  border-color: khaki;
-  box-shadow: 0 0 7px khaki;
+input:focus {
+  border-color: indigo;
+  box-shadow: 0 0 7px indigo;
   outline: none;
-}
-
-.input::placeholder {
-  color: silver;
-  font-style: italic;
-}
-
-.inputCheckbox {
-  font-family: inherit;
-  font-weight: 900;
-  font-size: 20px;
-  color: black;
-  padding: 10px 15px;
-  border: 2px solid crimson;
-  border-radius: 5px;
-  background-color: transparent;
-  margin: 10px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .saveSettings,
 .addQAndA {
   margin: 40px 0;
+}
+
+.inputGroup {
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.inputSelect {
+  font-family: inherit;
+  margin-left: 10px;
+  width: 40%;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 2px solid black;
+  outline: none;
+  background-color: transparent;
+  color: black;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.inputSelect:hover {
+  border-color: indigo;
+  box-shadow: 0 0 10px indigo;
+}
+
+.input::placeholder {
+  font-style: italic;
+  color: black;
+  opacity: 1;
 }
 
 .bulkImport {
@@ -70,43 +82,21 @@ h3 {
 
 textarea {
   font-family: inherit;
-  font-weight: 900;
+  font-weight: 700;
   font-size: 20px;
   color: black;
   padding: 10px 15px;
   border: 2px solid black;
-  border-radius: 5px;
+  border-radius: 20px;
   background-color: transparent;
 }
 
 textarea:focus {
-  border-color: khaki;
-  box-shadow: 0 0 7px khaki;
+  border-color: indigo;
+  box-shadow: 0 0 7px indigo;
   outline: none;
-}
-
-.configurationMode {
-  font-weight: 900;
-  font-size: 90px;
-}
-
-.inputLabel {
-  font-size: 30px;
-}
-
-.appSettings {
-  font-weight: 900;
-  font-size: 60px;
 }
 
 .importDataTextarea {
   resize: none;
-}
-
-.configurationButtons {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: stretch;
-  gap: 20px;
 }

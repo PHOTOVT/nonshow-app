@@ -3,23 +3,13 @@ import { AppContext } from "../context/AppContext";
 import css from "../styles/QuestionScreen.module.css";
 
 function QuestionScreen({ onQuestion }) {
-  const { questions, setQuestions, players, setPlayers } =
-    useContext(AppContext);
+  const { questions, setQuestions, players, setPlayers } = useContext(AppContext);
 
-  const unansweredQuestions = questions.filter(
-    (question) =>
-      question.time &&
-      question.name &&
-      question.answer &&
-      question.points &&
-      !question.used
-  );
+  const unansweredQuestions = questions.filter((question) => !question.used);
 
   const currentQuestion = unansweredQuestions[0] || null;
 
-  const [timeRemaining, setTimeRemaining] = useState(
-    currentQuestion?.time || 30
-  );
+  const [timeRemaining, setTimeRemaining] = useState(currentQuestion?.time || 30);
   const [showAnswer, setShowAnswer] = useState(false);
 
   useEffect(() => {
@@ -62,22 +52,21 @@ function QuestionScreen({ onQuestion }) {
   };
 
   if (!currentQuestion) {
-    return <p>No unanswered questions available.</p>;
+    return <h3>No unanswered questions available</h3>;
   }
 
   return (
     <div className={css.container}>
-      <h2>Question</h2>
-      <p className={css.question}>{currentQuestion.name}</p>
-      <div className={css.timer}>
+      <h2>{currentQuestion.name}</h2>
+      <div className={css.timedOutAnswer}>
         {showAnswer ? (
-          <p className={css.answer}>Answer: {currentQuestion.answer}</p>
+          <h3 className={css.answer}>Answer: {currentQuestion.answer}</h3>
         ) : (
-          <p>Time Remaining: {timeRemaining}s</p>
+          <h3 className={css.timer}>Time Remaining: {timeRemaining}s</h3>
         )}
       </div>
       {showAnswer && (
-        <div className={css.actions}>
+        <div className={css.decisionContainer}>
           <button onClick={() => handleRewardPoints(currentQuestion.points)}>
             Reward Points
           </button>
