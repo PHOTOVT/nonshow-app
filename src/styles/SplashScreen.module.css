@@ -1,61 +1,65 @@
-  @font-face {
-    font-family: "Liberty";
-    src: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/907368/liberty.otf');
-  }
-  
-  * {
-    box-sizing: border-box;
-  }
-  
-  .container {
-    background-color: transparent;
-    font-size: 10px;
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .text {
-    font-family: 'Liberty';
-    font-weight: 100;
-    font-size: 7rem;
-    letter-spacing: -0.25em;
-    display: flex;
-    flex-flow: row;
-  }
-  
-  .letter {
-    color:  #9a29cc;
-    text-shadow: 0 0 2rem whitesmoke;
-    display: inline-block;
-  }
-  
-  .letter2 {
+@font-face {
+  font-family: "Liberty";
+  src: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/907368/liberty.otf");
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  background-color: transparent;
+  font-size: 10px;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.text {
+  font-family: "Liberty";
+  font-weight: 100;
+  font-size: 7rem;
+  letter-spacing: -0.25em;
+  display: flex;
+  flex-flow: row;
+}
+
+.letter {
+  color: #9a29cc;
+  text-shadow: 0 0 2rem whitesmoke;
+  display: inline-block;
+}
+
+.letter2 {
+  transform: translate(-0.2rem, 1rem) rotate(10deg);
+  animation: flicker 2s ease-in-out infinite alternate;
+}
+
+.letter1,
+.letter3 {
+  color: #0044cc;
+  text-shadow: 0 0 1rem lighten(#0044cc, 20%);
+}
+
+@keyframes flicker {
+  0%,
+  5% {
+    opacity: 1;
     transform: translate(-0.2rem, 1rem) rotate(10deg);
-    animation: flicker 2s ease-in-out infinite alternate;
   }
-  
-  .letter1,
-  .letter3 {
-    color: #0044cc;
-    text-shadow: 0 0 1rem lighten(#0044cc, 20%);
+  5.5%,
+  7% {
+    opacity: 0;
   }
-  
-  @keyframes flicker {
-    0%, 5% {
-      opacity: 1;
-      transform: translate(-0.2rem, 1rem) rotate(10deg);
-    }
-    5.5%, 7% {
-      opacity: 0;
-    }
-    6%, 8%, 50%, 100% {
-      opacity: 1;
-      transform: translate(-0.2rem, 1rem) rotate(10deg);
-    }
-    50% {
-      transform: translate(-0.2rem, 1rem) rotate(13deg);
-    }
+  6%,
+  8%,
+  50%,
+  100% {
+    opacity: 1;
+    transform: translate(-0.2rem, 1rem) rotate(10deg);
   }
-  
+  50% {
+    transform: translate(-0.2rem, 1rem) rotate(13deg);
+  }
+}

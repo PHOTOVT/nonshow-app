@@ -22,10 +22,10 @@ function PlayersScreen({ onPlayers }) {
       <h2>Players Screen</h2>
       <ul>
         {players.map((player) => (
-          <li
-            key={player.id}
-          >
-            <h3>{player.name}: {player.points} points</h3>
+          <li key={player.id}>
+            <h3>
+              {player.name}: {player.points} points
+            </h3>
             <button
               onClick={() => handleNextPlayer(player.id)}
               disabled={player.isActive}

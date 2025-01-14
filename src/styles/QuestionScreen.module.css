@@ -6,10 +6,41 @@
   color: darkseagreen;
 }
 
+input::placeholder {
+  font-style: italic;
+  color: black;
+  opacity: 1;
+}
+
+.guessLetters {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
 .decisionContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 20px;
+}
+
+.mcqOptionsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 60px;
+}
+
+.mcqOption {
+  color: black;
+  background-color: transparent;
+}
+
+.mcqOption:hover {
+  color: white;
 }

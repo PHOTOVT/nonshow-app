@@ -95,7 +95,7 @@ function ConfigurationMode({ onConfiguration }) {
 
       setQuestionText("");
       setAnswerText("");
-      setAnswerOptions(["", "", "", ""]);
+      setAnswerOptions(["", "", ""]);
       setHiddenWord("");
     }
   };

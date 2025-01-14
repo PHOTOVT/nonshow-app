@@ -9,8 +9,12 @@ import QuestionScreen from "./components/QuestionScreen";
 import WelcomeScreen from "./components/WelcomeScreen";
 
 function App() {
-  const [mode, setMode] = useState("configuration");
+  const [mode, setMode] = useState("welcome");
   const [loading, setLoading] = useState(false);
+
+  const handleWelcome = () => {
+    setMode("configuration");
+  };
 
   const handleConfiguration = () => {
     setMode("loading");
@@ -41,7 +45,7 @@ function App() {
   return (
     <AppProvider>
       <div className="App">
-        <WelcomeScreen />
+        {mode === "welcome" && <WelcomeScreen onWelcome={handleWelcome} />}
         {mode === "configuration" && (
           <ConfigurationMode onConfiguration={handleConfiguration} />
         )}
